@@ -52,4 +52,7 @@ where = ["modules"]
 
 [tool.setuptools.package-data]
 pmg_qt = ["forms/*.ui"]
+# Include compiled extension and DLL dependencies for Windows wheels
+pymol = ["*.pyd", "Release/*.dll"]
+"chempy.champ" = ["*.pyd"]
 
