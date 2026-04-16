@@ -45,7 +45,7 @@ jobs:
     - name: Build
       run: |
         pip install --upgrade pip
-        pip install -v --config-settings testing=True '.[dev]'
+        pip install -v --config-settings=cmake.define.PYMOL_TESTING=ON '.[dev]'
       env:
         DEBUG: 1
 
@@ -105,7 +105,7 @@ jobs:
     - name: Build PyMOL
       run: |
         conda activate $env:CONDA_ENV_NAME
-        pip install -v --config-settings testing=True .[dev]
+        pip install -v --config-settings=cmake.define.PYMOL_TESTING=ON .[dev]
 
     - name: Test
       run: |
@@ -163,7 +163,7 @@ jobs:
       run: |
         source activate $CONDA_ENV_NAME
         export MACOSX_DEPLOYMENT_TARGET=12.0
-        pip install -v --config-settings testing=True '.[dev]'
+        pip install -v --config-settings=cmake.define.PYMOL_TESTING=ON '.[dev]'
 
     - name: Test
       run: |

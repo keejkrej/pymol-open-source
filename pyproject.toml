@@ -4,12 +4,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dynamic=["version"]
 license = {file = "LICENSE"}
-description = """
-PyMOL is a Python-enhanced molecular graphics tool.
-It excels at 3D visualization of proteins, small molecules, density,
-surfaces, and trajectories. It also includes molecular editing,
-ray tracing, and movies. Open Source PyMOL is free to everyone!
-"""
+description = "PyMOL is a Python-enhanced molecular graphics tool for 3D molecular visualization."
 authors = [
   {name = "Schrodinger", email = "pymol-users@lists.sourceforge.net"},
 ]
@@ -19,12 +14,11 @@ dependencies = [
 ]
 
 [build-system]
-build-backend = "backend"
-backend-path = ["_custom_build"]
+build-backend = "scikit_build_core.build"
 requires = [
-  "cmake>=3.13.3",
   "numpy>=2.0",
-  "setuptools>=69.2.0",
+  "pathspec==0.12.0",
+  "scikit-build-core>=0.12.2",
 ]
 
 [project.optional-dependencies]
@@ -46,13 +40,19 @@ Changelog = "https://github.com/schrodinger/pymol-open-source/blob/master/Change
 
 [project.scripts]
 pymol = "pymol:launch"
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+wheel.packages = [
+  "modules/pymol",
+  "modules/pymol2",
+  "modules/pmg_qt",
+  "modules/pmg_tk",
+  "modules/chempy",
+  "modules/web",
+]
 
-[tool.setuptools.packages.find]
-where = ["modules"]
-
-[tool.setuptools.package-data]
-pmg_qt = ["forms/*.ui"]
-# Include compiled extension and DLL dependencies for Windows wheels
-pymol = ["*.pyd", "Release/*.dll"]
-"chempy.champ" = ["*.pyd"]
+[tool.scikit-build.metadata.version]
+provider = "scikit_build_core.metadata.regex"
+input = "layer0/Version.h"
+regex = '#define\s+_PyMOL_VERSION\s+"(?P<value>[^"]+)"'
 

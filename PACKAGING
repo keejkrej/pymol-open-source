@@ -34,4 +34,4 @@ scripts     -> /usr/share/pymol/scripts (RUNTIME REQUIREMENT)
 data        -> /usr/share/pymol/data (RUNTIME REQUIREMENT)
 
 Installable with:
-python setup.py install --pymol-path=/usr/share/pymol
+pip install .

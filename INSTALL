@@ -1,4 +1,3 @@
-
 ----------------------------------------------------------------------
 INSTALLATION VIA COMPILATION
 ----------------------------------------------------------------------
@@ -8,37 +7,47 @@ See also: http://pymolwiki.org/index.php/Linux_Install
 REQUIREMENTS
 
     - C++17 compiler (e.g. gcc 8+)
-    - CMake (3.13+)
+    - CMake (3.15+)
     - Python 3.9+
     - pip (with build submodule <pip install build>; conda's package name is python-build)
     - Pmw (Python Megawidgets) (optional, for legacy GUI/plugins)
       https://github.com/schrodinger/pmw-patched
     - OpenGL
     - GLEW
-    - GLUT (freeglut) (optional, enable with --glut=true)
+    - GLUT (freeglut) (optional, enable with PYMOL_GLUT=ON)
     - libpng
     - freetype
-    - libxml2 (optional, for COLLADA export, disable with --libxml=no)
+    - libxml2 (optional, for COLLADA export, disable with PYMOL_LIBXML=OFF)
     - msgpack-c 2.1.5+ (optional, for fast MMTF loading and export,
-        disable with --use-msgpackc=no)
-    - mmtf-cpp (for fast MMTF export, disable with --use-msgpackc=no)
+        disable with PYMOL_USE_MSGPACKC=no)
+    - mmtf-cpp (for fast MMTF export, disable with PYMOL_USE_MSGPACKC=no)
     - PyQt5, PyQt6, PySide2 or PySide6 (optional, will fall back to Tk
-        interface if compiled with --glut=true)
+        interface if compiled with PYMOL_GLUT=ON)
     - glm
-    - catch2 (optional, enable with --testing=true)
-    - openvr 1.0.x (optional, enable with --openvr=true)
-    - libnetcdf (optional, disable with --vmd-plugins=no)
+    - catch2 (optional, enable with PYMOL_TESTING=ON)
+    - openvr 1.0.x (optional, enable with PYMOL_OPENVR=ON)
+    - libnetcdf (optional, disable with PYMOL_VMD_PLUGINS=OFF)
 
 SETUP OPTIONS
 
     pip install --help
 
-    Special install options:
-      --pymol-path=       installation directory for PyMOL data ($PYMOL_PATH)
-      --no-launcher       skip installation of the pymol launcher
+    Build options are passed as CMake defines:
+      --config-settings=cmake.define.<NAME>=<VALUE>
+
+    Common options:
+      PYMOL_GLUT=ON|OFF
+      PYMOL_LIBXML=ON|OFF
+      PYMOL_USE_MSGPACKC=c++11|c|guess|no
+      PYMOL_TESTING=ON|OFF
+      PYMOL_OPENVR=ON|OFF
+      PYMOL_VMD_PLUGINS=ON|OFF
+      PYMOL_USE_OPENMP=default|yes|no
+      PYMOL_USE_VTKM=2.0|2.1|2.2|2.3|no
+      PYMOL_PREFIX_PATH=<path1[;path2...]>
 
     Environment variables:
-      PREFIX_PATH   Colon-delimited list of paths to search for headers and
+      PREFIX_PATH   Path-delimited list of paths to search for headers and
                     libraries, e.g. $HOME/mmtf-cpp:$HOME/msgpack-c:/opt/local
       CXX           C++ compiler command
       CC            C compiler command
@@ -46,19 +55,28 @@ SETUP OPTIONS
       CFLAGS        C compiler and linker flags
       CPPFLAGS      C/C++ preprocessor flags, e.g. -I/tmp/msgpack-c/include
       LDFLAGS       linker flags
+      CMAKE_BUILD_PARALLEL_LEVEL
+                    Number of parallel build jobs
 
 INSTALLATION
 
     Clean build and installation
       pip install .
 
-    Recommended for developers (build output, incremental build, and building C++ unit tests)
-      pip install --verbose --no-build-isolation --config-settings testing=True .
+    Recommended for developers (verbose build output, incremental build,
+    and building C++ unit tests)
+      pip install --verbose --no-build-isolation \
+        --config-settings=cmake.define.PYMOL_TESTING=ON .
+
+    Example with additional feature toggles
+      pip install --verbose \
+        --config-settings=cmake.define.PYMOL_GLUT=ON \
+        --config-settings=cmake.define.PYMOL_LIBXML=OFF .
 
 RUNNING PyMOL
 
-    $PYMOL_PATH/bin/pymol
+    pymol
     or
-    $PYTHONUSERBASE/bin/pymol
+    python -m pymol
 
 Good luck!
