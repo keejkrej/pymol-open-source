@@ -1,0 +1,18 @@
+{
+  "name": "pymol",
+  "version-string": "3.0.0",
+  "description": "PyMOL molecular visualization system",
+  "dependencies": [
+    "glew",
+    "freetype",
+    "libpng",
+    "libxml2",
+    {
+      "name": "msgpack-c",
+      "version>=": "6.0"
+    },
+    "netcdf-c",
+    "glm",
+    "catch2"
+  ]
+}

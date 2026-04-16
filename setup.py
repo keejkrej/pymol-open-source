@@ -247,12 +247,50 @@ parser.add_argument(
 options, sys.argv[1:] = parser.parse_known_args(namespace=options)
 
 
+def get_vcpkg_extra_inc_dirs() -> list[str]:
+    """
+    Return additional vcpkg include paths for vcpkg-specific directory
+    structures that differ from what PyMOL expects.
+    """
+    extra_dirs = []
+    if WIN:
+        vcpkg_root = os.environ.get("VCPKG_ROOT")
+        if vcpkg_root:
+            vcpkg_installed = os.path.join(vcpkg_root, "installed", "x64-windows")
+            # libxml2 in vcpkg: include/libxml2/libxml/*.h
+            # PyMOL expects: include/libxml/*.h, so add include/libxml2
+            libxml2_inc = os.path.join(vcpkg_installed, "include", "libxml2")
+            if os.path.exists(libxml2_inc):
+                extra_dirs.append(libxml2_inc)
+    return extra_dirs
+
+
+def is_vcpkg_installed() -> bool:
+    """Check if vcpkg is available and has packages installed for x64-windows."""
+    if not WIN:
+        return False
+    vcpkg_root = os.environ.get("VCPKG_ROOT")
+    if not vcpkg_root:
+        return False
+    vcpkg_installed = os.path.join(vcpkg_root, "installed", "x64-windows")
+    return os.path.exists(vcpkg_installed)
+
+
 def get_prefix_path() -> list[str]:
     """
     Return a list of paths which will be searched for "include",
     "include/freetype2", "lib", "lib64" etc.
     """
     paths = []
+
+    # Check for vcpkg installation first (Windows)
+    if WIN:
+        vcpkg_root = os.environ.get("VCPKG_ROOT")
+        if vcpkg_root:
+            # vcpkg installed packages for x64-windows
+            vcpkg_installed = os.path.join(vcpkg_root, "installed", "x64-windows")
+            if os.path.exists(vcpkg_installed):
+                paths.insert(0, vcpkg_installed)
 
     if (prefix_path := os.environ.get("PREFIX_PATH")) is not None:
         paths += prefix_path.split(os.pathsep)
@@ -702,11 +740,14 @@ if WIN:
         "Ws2_32",  # htonl
     ]
 
+    # Use vcpkg library names if vcpkg is available
+    png_lib = "libpng16" if is_vcpkg_installed() else "libpng"
+
     libs += (
         [
             "glew32",
             "freetype",
-            "libpng",
+            png_lib,
         ]
         + (options.glut)
         * [
@@ -779,6 +820,9 @@ inc_dirs += [
 def_macros += [
     ("_PYMOL_NUMPY", None),
 ]
+
+# Add vcpkg extra include directories for path structure differences
+inc_dirs.extend(get_vcpkg_extra_inc_dirs())
 
 for prefix in prefix_path:
     for dirs, suffixes in [

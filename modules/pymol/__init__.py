@@ -555,6 +555,14 @@ if 'DISPLAY' in os.environ:
 
 ########## C MODULE ############################
 
+# Windows: Add vcpkg DLL directory for proper dependency loading
+if IS_WINDOWS and hasattr(os, 'add_dll_directory'):
+    vcpkg_root = os.environ.get('VCPKG_ROOT')
+    if vcpkg_root:
+        vcpkg_bin = os.path.join(vcpkg_root, 'installed', 'x64-windows', 'bin')
+        if os.path.exists(vcpkg_bin):
+            os.add_dll_directory(vcpkg_bin)
+
 import pymol._cmd
 _cmd = sys.modules['pymol._cmd']
 
