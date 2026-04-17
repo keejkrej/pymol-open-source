@@ -59,6 +59,14 @@ SETUP OPTIONS
                     Number of parallel build jobs
 
 INSTALLATION
+    macOS + uv quickstart
+      xcode-select --install
+      brew install cmake glew freetype libpng libxml2 msgpack-cxx netcdf glm catch2
+      git clone --depth 1 https://github.com/rcsb/mmtf-cpp.git _deps/mmtf-cpp
+      cp -r _deps/mmtf-cpp/include/* include/
+      PREFIX_PATH="$(brew --prefix libxml2):$(brew --prefix)" uv sync
+      uv run pymol
+
     Windows + uv quickstart (run in Developer PowerShell for Visual Studio)
       $env:VCPKG_ROOT="C:\src\vcpkg"
       & "$env:VCPKG_ROOT\bootstrap-vcpkg.bat"

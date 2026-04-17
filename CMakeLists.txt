@@ -190,6 +190,7 @@ unset(CMAKE_REQUIRED_INCLUDES)
 
 if(NOT _pymol_use_msgpackc STREQUAL "no")
   list(APPEND pymol_source_dirs "contrib/mmtf-c")
+  list(APPEND pymol_include_dirs "${CMAKE_CURRENT_SOURCE_DIR}/contrib/mmtf-c")
 endif()
 
 _gather_sources(pymol_sources ${pymol_source_dirs})
